@@ -1,0 +1,44 @@
+<html>
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+
+            // call keyup event of execute each letter written in form 
+            $("#userName").keyup(function(){
+                var username = $(this).val(); 
+
+                api_url = 'http://localhost:8000/api/user/'+username
+
+                if (username.length >=3 ){
+                    // Call ajax to call API 
+                    $.ajax({
+                        url: api_url,
+                        method: 'get',
+                        success: function(data){
+                            var alertMsg = $('#alertMsg');
+                            // if result == True 
+                            if (data.result){
+                                alertMsg.text("user "+ username + " already exist");
+                                alertMsg.css('color','red');
+                            }
+                            else 
+                            {
+                                alertMsg.text("user "+ username + " is available");
+                                alertMsg.css('color','green');
+                            }
+                        },
+                        error: function(err){
+                            console.log("error",err);
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+<head>
+<body>
+    Username: <input id="userName" type="text">
+    <p id="alertMsg"></p>
+</body>
+</html>
