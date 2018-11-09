@@ -1,0 +1,90 @@
+<html>
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+
+            // call keyup event of execute each letter written in form 
+            $("#submit").click(function(){
+                
+                var username = $('#userName').val(); 
+                var password = $('#password').val(); 
+
+                console.log(username + password);
+
+
+                api_url = 'http://localhost:8000/api/user/'
+                    // Call ajax to call API 
+                $.ajax({
+                    url: api_url,
+                    method: 'post',
+                    data: JSON.stringify({"username": username, "password": password}),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function(data){
+                        $('#s').append(data.result);
+                    },
+                    failure: function(errMsg) {
+                         alert("error"+errMsg);
+                    }
+                    });
+                
+            });
+            // user list api call 
+            $("#showUser").click(function(){
+                api_url = 'http://localhost:8000/api/user/'
+                
+                $.ajax({
+                        url: api_url,
+                        method: 'get',
+                        success: function(data){
+                            $('#table').empty();
+                            $('#table').show();
+                            var i;
+                            for( i in data.result){
+                                var rowhtml = '<tr><td>'+ data.result[i]["id"] +'</td> <td>'+ data.result[i]["username"]+ '</td></tr>'
+                                $('#table').append(rowhtml);
+                                console.log(data.result[i]["username"]);
+                            }
+                        },
+                        error: function(err){
+                            console.log("error",err);
+                        }
+                    });
+            });
+
+        });
+    </script>
+<head>
+<body>
+<div class="container col-md-6">
+
+    <div class="form-group">
+        Username: <input id="userName" type="text" class="form-control">
+    </div>
+    <div class="form-group">
+    Password: <input id="password" type="text" class="form-control">
+    </div>
+    <input id="submit" type="submit" value="submit" class="btn btn-primary"  />
+
+    <h2 id='s'></h2>
+
+    <div class="row">
+        <button id="showUser"class="btn btn-primary" >User List</button>
+
+    <table class="table" id="table" style="display:none">
+        <tr>
+            <th>ID </th>
+            <th>User Name </th>
+        </tr>
+        
+
+    </table>
+    </div>
+    <br>
+    
+    </div>
+</body>
+</html>

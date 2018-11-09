@@ -1,0 +1,83 @@
+<html>
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+
+            api_url = 'http://localhost:8000/api/student/'
+                
+                $.ajax({
+                        url: api_url,
+                        method: 'get',
+                        success: function(data){
+                            var i;
+
+                            for( i in data.result){
+                                var brdName = data.result[i]['name']
+                                var rowhtml = '<option value='+ brdName +'>' + data.result[i]['name'] + '</option>'
+                                $('#board').append(rowhtml);
+            
+                            }
+                            
+                        },
+                        error: function(err){
+                            console.log("error",err);
+                        }
+                    });
+
+
+            // call keyup event of execute each letter written in form 
+            $("#search").click(function(){
+                
+                var roll = $('#roll').val(); 
+                var board = $('#board').val(); 
+
+                console.log(roll + board);
+
+
+                api_url = 'http://localhost:8000/api/student/'
+                    // Call ajax to call API 
+                $.ajax({
+                    url: api_url,
+                    method: 'post',
+                    data: JSON.stringify({"roll": roll, "board": board}),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function(data){
+                        $('#name').append(data.name);
+                        $('#gpa').append(data.gpa);
+                        $('#board').empty();
+                    },
+                    failure: function(errMsg) {
+                         alert(errMsg);
+                    }
+                    });
+                
+            });
+
+        });
+    </script>
+<head>
+<body>
+<div class="container col-md-6">
+
+    <div class="form-group">
+        Roll: <input id="roll" type="number" class="form-control">
+    </div>
+    <div class="form-group">
+        Board: 
+        <select id='board' class="form-control">
+        
+        </select>
+    </div>
+    <input id="search" type="submit" value="Search" class="btn btn-primary"  />
+    <h2 id='name'> </h2>
+    <h2 id='gpa'> </h2>
+
+    <br>
+    
+    </div>
+</body>
+</html>
